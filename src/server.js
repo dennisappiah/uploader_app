@@ -1,7 +1,6 @@
 const net = require("net");
-const fs = require("fs");
 const path = require("path");
-const { mkdir, open } = require("fs/promises");
+const fs = require("fs/promises");
 
 const server = net.createServer();
 
@@ -22,18 +21,16 @@ server.on("connection", async (socket) => {
         if (delimiterIndex !== -1) {
           // Extract filename
           filename = data.subarray(10, delimiterIndex).toString("utf-8");
-          console.log("Filename received:", filename);
 
           // Ensure storage directory exists
-          await mkdir("storage", { recursive: true });
+          await fs.mkdir("storage", { recursive: true });
 
           // Open file handle and create write stream
-          const fileHandle = await open(path.join("storage", filename), "w");
+          const fileHandle = await fs.open(path.join("storage", filename), "w");
           fileWriteStream = fileHandle.createWriteStream();
 
           // Write the remaining data after the delimiter
           const fileData = data.subarray(delimiterIndex + delimiter.length);
-          console.log("Initial data length:", fileData.length);
 
           // Write initial data to the file
           fileWriteStream.write(fileData);

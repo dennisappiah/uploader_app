@@ -5,10 +5,16 @@ const path = require("path");
 const socket = net.createConnection({ host: "::1", port: 5050 }, async () => {
   console.log("connected to the server");
 
+  // process.argv returns a list of path of arguments [node client.js text.txt]->0
+  // [../bin/node, ../videos/client.js] -> 1
+  // text.txt -> 2
+
   // Get the file path from the command line arguments
   const filePath = process.argv[2];
   if (!filePath) {
-    console.error("No file path specified. Please provide a file path as an argument.");
+    console.error(
+      "No file path specified. Please provide a file path as an argument."
+    );
     process.exit(1);
   }
 
@@ -21,7 +27,7 @@ const socket = net.createConnection({ host: "::1", port: 5050 }, async () => {
     // Send the filename to the server with a delimiter
     socket.write(`filename: ${fileName}-------`);
 
-    // Pipe the file read stream to the socket
+    // Pipe the file read stream to the socket writable
     fileReadStream.pipe(socket);
 
     // When the file read stream ends, close the file handle and end the socket connection
